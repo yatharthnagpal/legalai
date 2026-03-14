@@ -23,17 +23,18 @@ def _get_groq_client():
     """Lazy-load the Groq client."""
     global _groq_client
     if _groq_client is None:
-        api_key = os.getenv("GROQ_API_KEY", "")
+        raw_key = os.getenv("GROQ_API_KEY", "")
+        api_key = raw_key.strip()
         if api_key:
             try:
                 from groq import Groq
                 _groq_client = Groq(api_key=api_key)
                 print(f"✅ Groq initialized (key: {api_key[:8]}...)")
             except Exception as e:
-                print(f"⚠️ Failed to initialize Groq: {e}")
+                print(f"❌ Failed to initialize Groq: {e}")
                 _groq_client = None
         else:
-            print("⚠️ GROQ_API_KEY not found in environment")
+            print("⚠️ GROQ_API_KEY not found or empty after stripping whitespace")
     return _groq_client
 
 

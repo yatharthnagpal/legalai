@@ -63,20 +63,26 @@ async def diag_groq():
     if not api_key:
         return {"status": "error", "message": "GROQ_API_KEY is missing from environment"}
     
-    from app.services.nlu import _call_llm
-    test_response = _call_llm("Respond with 'Neural Link Active'.", max_retries=0)
-    
-    if test_response:
+    from app.services.nlu import _groq_client
+    try:
+        from groq import Groq
+        client = Groq(api_key=api_key.strip())
+        test_response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[{"role": "user", "content": "ping"}],
+            max_tokens=5
+        )
         return {
             "status": "success",
-            "message": "Groq is connected and responding",
-            "api_key_prefix": api_key[:8] + "...",
-            "test_response": test_response
+            "message": "Groq is connected",
+            "api_key_prefix": api_key.strip()[:8] + "...",
+            "response": test_response.choices[0].message.content
         }
-    else:
+    except Exception as e:
         return {
             "status": "error", 
-            "message": "Groq is not responding. Check your API key or Render logs for errors."
+            "message": f"Groq Error: {str(e)}",
+            "api_key_prefix": api_key.strip()[:8] + "..." if api_key else "None"
         }
 
 
