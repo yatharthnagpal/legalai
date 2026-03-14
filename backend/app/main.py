@@ -58,15 +58,20 @@ def on_startup():
 
 @app.get("/api/diag/groq")
 async def diag_groq():
-    """Diagnostic endpoint to check Groq connectivity."""
+    """Diagnostic endpoint to check Groq connectivity and library versions."""
     api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
         return {"status": "error", "message": "GROQ_API_KEY is missing from environment"}
     
-    from app.services.nlu import _groq_client
+    import groq
+    import httpx
+    version_info = {
+        "groq_version": getattr(groq, "__version__", "unknown"),
+        "httpx_version": getattr(httpx, "__version__", "unknown"),
+    }
+    
     try:
-        from groq import Groq
-        client = Groq(api_key=api_key.strip())
+        client = groq.Groq(api_key=api_key.strip())
         test_response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[{"role": "user", "content": "ping"}],
@@ -75,6 +80,7 @@ async def diag_groq():
         return {
             "status": "success",
             "message": "Groq is connected",
+            "versions": version_info,
             "api_key_prefix": api_key.strip()[:8] + "...",
             "response": test_response.choices[0].message.content
         }
@@ -82,7 +88,8 @@ async def diag_groq():
         return {
             "status": "error", 
             "message": f"Groq Error: {str(e)}",
-            "api_key_prefix": api_key.strip()[:8] + "..." if api_key else "None"
+            "versions": version_info,
+            "api_key_prefix": api_key.strip()[:8] + "..."
         }
 
 
