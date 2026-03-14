@@ -10,7 +10,7 @@ pip install -r requirements.txt
 
 echo "=== Installing Frontend Dependencies ==="
 cd ../frontend
-npm install --legacy-peer-deps
+npm install --force
 
 echo "=== Building Frontend ==="
 npm run build
