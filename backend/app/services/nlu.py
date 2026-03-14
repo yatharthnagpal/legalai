@@ -359,12 +359,21 @@ def generate_chat_response(
 ) -> str:
     """Generate a chat response using Groq LLM with contract context and role perspective."""
     # Try LLM first
-    if user_message and os.getenv("GROQ_API_KEY"):
+    api_key = os.getenv("GROQ_API_KEY")
+    if user_message and api_key:
+        print(f"🤖 Attempting LLM response for intent: {intent}")
         prompt = _build_context_prompt(user_message, analysis_data, contract_text)
         system_prompt = _build_system_prompt(role)
         result = _call_llm(prompt, system_prompt=system_prompt)
         if result:
+            print("✨ LLM response successful")
             return result
+        else:
+            print("❌ LLM call returned None (all models failed or rate limited)")
+    elif not api_key:
+        print("⚠️ GROQ_API_KEY is MISSING in production environment")
+    else:
+        print("ℹ️ Skipping LLM (no message or empty prompt)")
 
     # ─── Fallback: Static Responses ───────────────────────
     if intent == "general":

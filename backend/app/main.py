@@ -56,6 +56,30 @@ def on_startup():
 
 # ─── Root & Health Endpoints ─────────────────────────────
 
+@app.get("/api/diag/groq")
+async def diag_groq():
+    """Diagnostic endpoint to check Groq connectivity."""
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        return {"status": "error", "message": "GROQ_API_KEY is missing from environment"}
+    
+    from app.services.nlu import _call_llm
+    test_response = _call_llm("Respond with 'Neural Link Active'.", max_retries=0)
+    
+    if test_response:
+        return {
+            "status": "success",
+            "message": "Groq is connected and responding",
+            "api_key_prefix": api_key[:8] + "...",
+            "test_response": test_response
+        }
+    else:
+        return {
+            "status": "error", 
+            "message": "Groq is not responding. Check your API key or Render logs for errors."
+        }
+
+
 @app.get("/health")
 async def health():
     return HealthResponse(
