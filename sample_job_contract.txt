@@ -1,0 +1,28 @@
+EMPLOYMENT AGREEMENT
+
+This Employment Agreement ("Agreement") is made this 13th day of March, 2026, by and between:
+
+TechCorp India Pvt Ltd, a company incorporated under the Companies Act, 2013, having its registered office at Bangalore, Karnataka (the "Employer");
+AND
+Jay Kumar, residing at Delhi, India (the "Employee").
+
+1. POSITION AND SALARY
+The Employee shall serve as a Senior Software Engineer. The Employer shall pay the Employee a monthly salary of INR 1,50,000. 
+[RISK SITE]: Salary will be paid bi-annually at the end of every 6 months.
+
+2. TERMINATION
+The Employer may terminate this Agreement at its sole discretion at any time without cause and without prior notice.
+
+3. CONFIDENTIALITY
+The Employee shall not disclose any proprietary information during or after the term of employment.
+
+4. NON-COMPETE
+The Employee agrees that for a period of 5 years after leaving the Employer, he shall not work for any other technology company in India or provide any similar services to any competitors.
+
+5. INTELLECTUAL PROPERTY
+All intellectual property rights in any work created by the Employee during the term of employment, including ideas not yet reduced to writing, shall vest exclusively and forever with the Employer.
+
+6. GOVERNING LAW
+This Agreement shall be governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of the courts in Bangalore.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement on the date first written above.
