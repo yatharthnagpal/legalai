@@ -376,51 +376,44 @@ def generate_chat_response(
         print("ℹ️ Skipping LLM (no message or empty prompt)")
 
     # ─── Fallback: Static Responses ───────────────────────
+    # We reach here if the LLM failed or GROQ_API_KEY is missing
+    offline_msg = "⚠️ **Neural Link Congestion**: I'm having trouble reaching my primary intelligence core right now."
+    if not api_key:
+        offline_msg = "⚠️ **System Configuration Alert**: `GROQ_API_KEY` is not detected in this environment."
+
     if intent == "general":
         return (
             "👋 Hello! I'm your AI Legal Assistant. I can help you with:\n\n"
-            "📋 **Analyze** — Upload a contract and I'll identify risks and compliance issues\n"
-            "⚠️ **Check Risk** — Detect risky, one-sided, or ambiguous clauses\n"
-            "📝 **Summarize** — Get a plain-English summary of any contract\n"
-            "✅ **Check Compliance** — Verify compliance with Indian laws\n"
-            "📄 **Draft** — Generate an India-compliant contract draft\n"
-            "💡 **Suggest** — Get safer clause alternatives\n\n"
-            "Just upload a contract or type your request!"
+            "✨ **Analyze** — Neural auditing of your legal instruments\n"
+            "⚠️ **Check Risk** — Identification of liability loopholes\n"
+            "📝 **Summarize** — Plain-English executive summaries\n"
+            "⚖️ **Check Compliance** — Verification of Indian law alignment\n"
+            "� **Draft** — Neural generation of customized contracts\n\n"
+            "Just upload a document or type your request!"
         )
 
-    if intent == "analyze" and analysis_data:
-        health = analysis_data.get("risk_report", {}).get("health_score", "N/A")
-        risk_level = analysis_data.get("risk_report", {}).get("overall_risk_level", "N/A")
-        total_clauses = analysis_data.get("risk_report", {}).get("total_clauses", 0)
-        high_risk = analysis_data.get("risk_report", {}).get("high_risk_clauses", 0)
+    # Context-aware fallbacks for when documents ARE uploaded but LLM fails
+    if analysis_data or contract_text:
+        if intent == "analyze":
+            return f"{offline_msg}\n\nHowever, your document has been statically analyzed. Please review the **Risk Report** or **Dashboard** tabs for the findings."
+        if intent == "summarize":
+            return f"{offline_msg}\n\nI see the document is processed, but I need active neural link to generate a natural language summary."
+        if intent == "check_risk":
+            return f"{offline_msg}\n\nI cannot scan for new risks dynamically, but you can view the identified issues in the **Liability Audit** tab."
+        if intent == "draft":
+            return f"{offline_msg}\n\nI recommend using the **Draft Architect** tab for template-based generation while the neural link is restoring."
+        
+        return f"{offline_msg} I see your document is active; how else can I assist with the static reports?"
 
-        return (
-            f"📊 **Full Analysis Complete!**\n\n"
-            f"**Health Score:** {health}/100\n"
-            f"**Overall Risk:** {risk_level}\n"
-            f"**Total Clauses:** {total_clauses}\n"
-            f"**High-Risk Clauses:** {high_risk}\n\n"
-            f"Check the **Risk Report** and **Compliance** tabs for details."
-        )
-
-    if intent == "draft":
-        return (
-            "📝 I can generate an India-compliant contract draft!\n\n"
-            "Please specify:\n"
-            "1. **Contract Type** (NDA, Service Agreement, Employment, etc.)\n"
-            "2. **Party A Name**\n"
-            "3. **Party B Name**\n\n"
-            "Or use the **Draft Generator** tab."
-        )
-
+    # Fallbacks for when NO document is uploaded
     responses = {
-        "analyze": "📋 Upload a contract and I'll perform a complete analysis.",
-        "check_risk": "⚠️ Upload a contract and I'll scan for risky clauses.",
-        "summarize": "📝 Upload a contract and I'll generate a summary.",
-        "check_compliance": "✅ Upload a contract and I'll check Indian law compliance.",
-        "explain": "🔍 Upload a contract or paste the clause you want explained.",
+        "analyze": "📋 Please upload a legal instrument first to initiate neural auditing.",
+        "check_risk": "⚠️ I need a document to scan for liabilities. Please use the upload feature.",
+        "summarize": "📝 Upload a contract and I'll generate an executive summary for you.",
+        "check_compliance": "⚖️ I can verify compliance once a document is uploaded.",
+        "draft": "� What kind of contract should I draft for you? (e.g., 'Draft a Service Agreement')",
         "suggest": "💡 Upload a contract and I'll suggest safer clause alternatives.",
-        "compare": "📊 Upload two contracts to compare them.",
+        "compare": "📊 Neural comparison requires two uploaded legal instruments."
     }
-
-    return responses.get(intent, responses["analyze"])
+    
+    return responses.get(intent, "Awaiting valid input or document upload to proceed.")
