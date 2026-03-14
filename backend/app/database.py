@@ -51,4 +51,16 @@ def get_db():
 
 def init_db():
     """Create all tables. Called on application startup."""
-    Base.metadata.create_all(bind=engine)
+    try:
+        from sqlalchemy.exc import OperationalError
+        Base.metadata.create_all(bind=engine)
+        print("🏛️ Database tables verified/created")
+    except OperationalError as e:
+        if "already exists" in str(e).lower():
+            print("🏛️ Tables already exist, skipping DDL")
+        else:
+            print(f"❌ Database error: {e}")
+            raise
+    except Exception as e:
+        print(f"❌ Unexpected database initialization error: {e}")
+        raise
